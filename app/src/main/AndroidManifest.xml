@@ -4,30 +4,49 @@
 
     <!-- Both "AR Optional" and "AR Required" apps require CAMERA permission. -->
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
     <!-- Indicates that app requires ARCore ("AR Required"). Ensures app is only
          visible in the Google Play Store on devices that support ARCore.
          For "AR Optional" apps remove this line. -->
     <uses-feature android:name="android.hardware.camera.ar" />
 
+
+
     <application
+        android:fullBackupContent="false"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity
-            android:name=".MainActivity"
-            android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:name=".splash.SplashActivity"
+            android:theme="@style/AppTheme.splash"
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".chat.ChatActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.Chat"/>
+
+        <activity
+            android:name=".arscene.MainActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.splash"
+            />
+
+        <!-- ARCore Required field -->
         <meta-data android:name="com.google.ar.core" android:value="required" />
     </application>
 

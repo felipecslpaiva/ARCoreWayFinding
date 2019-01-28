@@ -20,6 +20,11 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+    packagingOptions {
+        exclude 'META-INF/proguard/androidx-annotations.pro'
+        exclude 'META-INF/DEPENDENCIES'
+    }
 }
 
 dependencies {
@@ -30,6 +35,14 @@ dependencies {
     implementation 'com.google.ar:core:1.6.0'
     implementation 'com.google.ar.sceneform.ux:sceneform-ux:1.6.0'
     implementation 'com.google.ar.sceneform:core:1.6.0'
+    implementation "com.google.ar.sceneform:plugin:1.6.0"
+    implementation "com.google.ar.sceneform.ux:sceneform-ux:1.6.0"
+    implementation "ai.api:sdk:2.0.7@aar"
+    implementation 'com.squareup.picasso:picasso:2.71828'
+    implementation "ai.api:libai:1.6.12"
+    implementation 'com.google.apis:google-api-services-dialogflow:v2-rev50-1.25.0'
+    implementation 'io.grpc:grpc-okhttp:1.15.1'
+
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
