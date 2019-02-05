@@ -9,4 +9,5 @@
     <color name="colorPrimaryDarkGrey">#000000</color>
     <color name="colorAccentGrey">#ffffff</color>
     <color name="white">#ffffff</color>
+    <color name="dimgrey">#696969</color>
 </resources>

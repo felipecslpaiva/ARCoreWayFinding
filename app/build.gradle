@@ -37,6 +37,7 @@ dependencies {
     implementation 'com.google.ar.sceneform:core:1.6.0'
     implementation "com.google.ar.sceneform:plugin:1.6.0"
     implementation "com.google.ar.sceneform.ux:sceneform-ux:1.6.0"
+    implementation 'com.google.ar.sceneform:assets:1.6.0'
     implementation "ai.api:sdk:2.0.7@aar"
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation "ai.api:libai:1.6.12"
