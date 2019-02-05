@@ -61,6 +61,7 @@ public class ARWayFragmentPresenter implements ARWayFragmentContract.presenter {
         arWayFragment.setOnTapArPlaneListener(this::tapListener);
     }
 
+    //This getter is for local resources will keep it here as reference
     CompletableFuture<ModelRenderable> get3DModel() {
         RenderableSource.Builder builder = RenderableSource.builder().setSource(
                 context,
