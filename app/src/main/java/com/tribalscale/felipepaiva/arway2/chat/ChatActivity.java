@@ -48,11 +48,7 @@ public class ChatActivity extends AppCompatActivity implements ChatContract.view
     }
 
     private void sendMessage(String text) {
-        ChatMessage chatMessage = new ChatMessage();
-        chatMessage.buildUserMessageForText(text);
-        chatAdapter.addMessage(chatMessage);
-        editText.getText().clear();
-        chatListView.smoothScrollToPosition(chatAdapter.getItemCount());
+        chatPressenter.sendMessage(text);
     }
 
     private TextWatcher getTextWatcher() {
@@ -93,5 +89,11 @@ public class ChatActivity extends AppCompatActivity implements ChatContract.view
     @Override
     public void navigateToArScene() {
         startActivity(new Intent(this, MainActivity.class));
+    }
+
+    @Override
+    public void clearEditText() {
+        editText.getText().clear();
+        chatListView.smoothScrollToPosition(chatAdapter.getItemCount());
     }
 }

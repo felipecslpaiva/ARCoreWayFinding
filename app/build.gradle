@@ -67,7 +67,7 @@ dependencies {
     implementation ("com.google.cloud:google-cloud-dialogflow:0.79.0-alpha")
     implementation ('com.google.apis:google-api-services-dialogflow:v2-rev50-1.25.0')
 
-    implementation 'io.grpc:grpc-okhttp:1.15.1'
+    implementation 'io.grpc:grpc-okhttp:1.18.0'
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.1.1'

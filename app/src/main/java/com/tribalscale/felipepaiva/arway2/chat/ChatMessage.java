@@ -11,17 +11,17 @@ public class ChatMessage {
         return imageurl;
     }
 
-    public void setImageurl(String imageurl) {
+    void setImageurl(String imageurl) {
         this.imageurl = imageurl;
     }
 
     private String imageurl = "";
 
-    public int getMessageType() {
+    int getMessageType() {
         return messageType;
     }
 
-    public void setMessageType(int messageType) {
+    void setMessageType(int messageType) {
         this.messageType = messageType;
     }
 
@@ -29,7 +29,7 @@ public class ChatMessage {
         return messageOrigin;
     }
 
-    public void setMessageOrigin(int messageOrigin) {
+    void setMessageOrigin(int messageOrigin) {
         this.messageOrigin = messageOrigin;
     }
 
@@ -53,13 +53,19 @@ public class ChatMessage {
         return message;
     }
 
-    public void setMessage(String message) {
+    void setMessage(String message) {
         this.message = message;
     }
 
-    public void buildUserMessageForText(String text) {
+    void buildUserMessageForText(String text) {
         this.setMessage(text);
-        this.setMessageType(3);
-        this.setMessageOrigin(1);
+        this.setMessageType(ChatViewTypes.USER_MESSAGE_TEXT);
+        this.setMessageOrigin(ChatMessageOrigin.LOCAL);
+    }
+
+    void buildBotMessageForText(String text) {
+        this.setMessage(text);
+        this.setMessageType(ChatViewTypes.BOT_TEXT_SIMPLE);
+        this.setMessageOrigin(ChatMessageOrigin.REMOTE);
     }
 }
