@@ -3,6 +3,14 @@ package com.tribalscale.felipepaiva.arway2.chat;
 import android.content.Context;
 import android.view.View;
 
+import com.google.api.gax.core.FixedCredentialsProvider;
+import com.google.auth.oauth2.GoogleCredentials;
+import com.google.cloud.dialogflow.v2.SessionName;
+import com.google.cloud.dialogflow.v2.SessionsClient;
+import com.google.cloud.dialogflow.v2.SessionsSettings;
+import com.tribalscale.felipepaiva.arway2.R;
+
+import java.io.InputStream;
 import java.util.ArrayList;
 
 import ai.api.AIServiceContext;
@@ -22,14 +30,20 @@ public class ChatPressenter implements ChatContract.presenter {
     private ChatContract.view chatViewContract;
 
     ChatPressenter(Context context, ChatContract.view view) {
-        initAndroidLib(context);
-        initJavaApi(context);
         this.chatViewContract = view;
+        initAndroidLib(context);
+        initChatBotV2(context);
     }
 
-    private void initJavaApi(Context context) {
+    private void initChatBotV2(Context context) {
         try {
-//            context.getResources().openRawResource(R.raw)
+            InputStream inputStream = context.getResources().openRawResource(R.raw.dialog_flow_credentials);
+            GoogleCredentials credentials = GoogleCredentials.fromStream(inputStream);
+            SessionsSettings.Builder builder = SessionsSettings.newBuilder();
+
+            SessionsSettings sessionsSettings = builder.setCredentialsProvider(FixedCredentialsProvider.create(FixedCredentialsProvider.create(credentials).getCredentials())).build();
+            SessionsClient sessionsClient = SessionsClient.create(sessionsSettings);
+            SessionName of = SessionName.of("moe-kmabad", "99dc365d0cf1480d831b040a51775ef3");
         }catch (Exception ex){
             ex.printStackTrace();
         }
