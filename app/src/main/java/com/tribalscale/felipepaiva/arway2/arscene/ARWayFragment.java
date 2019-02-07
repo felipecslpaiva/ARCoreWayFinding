@@ -2,7 +2,6 @@ package com.tribalscale.felipepaiva.arway2.arscene;
 
 import android.Manifest;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,11 +17,7 @@ import androidx.annotation.Nullable;
 public class ARWayFragment extends ArFragment implements ARWayFragmentContract.view{
 
     private String TAG = ARWayFragment.class.getName();
-
     private ARWayFragmentPresenter presenter;
-    public boolean hasFinishedLoading = false;
-    private ModelRenderable lineRenderable;
-    private CompletableFuture<Object> objectCompletableFuture;
 
     public ARWayFragment() {}
 
@@ -57,7 +52,7 @@ public class ARWayFragment extends ArFragment implements ARWayFragmentContract.v
     }
 
     @Override
-    public void render(ModelRenderable modelRenderable) {
-
+    public void savePath() {
+        presenter.savePath();
     }
 }

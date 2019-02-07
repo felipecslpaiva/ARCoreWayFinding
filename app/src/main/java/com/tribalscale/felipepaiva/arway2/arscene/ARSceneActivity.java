@@ -1,19 +1,29 @@
 package com.tribalscale.felipepaiva.arway2.arscene;
 
+import android.app.Fragment;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.tribalscale.felipepaiva.arway2.R;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
+import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity {
+public class ARSceneActivity extends AppCompatActivity {
+
+    private ImageView imageViewStore;
+    private ARWayFragment arWayFragment;
+    private String TAG = ARSceneActivity.class.getSimpleName();
+    private ARWayFragmentContract.view fragmentViewContract;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,6 +31,26 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        imageViewStore = findViewById(R.id.activity_main_content_image);
+        imageViewStore.setOnClickListener(
+                v -> {
+                    if(fragmentViewContract != null){
+                        fragmentViewContract.savePath();
+                    }
+                    Toast.makeText(
+                            ARSceneActivity.this, "Path saved", Toast.LENGTH_LONG)
+                            .show();
+                });
+    }
+
+    @Override
+    public void onAttachFragment(@NonNull androidx.fragment.app.Fragment fragment) {
+        super.onAttachFragment(fragment);
+        if(fragment instanceof ARWayFragment){
+            fragmentViewContract = arWayFragment;
+            Log.d(TAG, fragment.getClass().getSimpleName());
+        }
     }
 
     @Override

@@ -10,7 +10,7 @@ import android.widget.EditText;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.tribalscale.felipepaiva.arway2.R;
-import com.tribalscale.felipepaiva.arway2.arscene.MainActivity;
+import com.tribalscale.felipepaiva.arway2.arscene.ARSceneActivity;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -87,7 +87,7 @@ public class ChatActivity extends AppCompatActivity implements ChatContract.view
 
     @Override
     public void navigateToArScene() {
-        startActivity(new Intent(this, MainActivity.class));
+        startActivity(new Intent(this, ARSceneActivity.class));
     }
 
     @Override
