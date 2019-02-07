@@ -16,6 +16,12 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import static com.tribalscale.felipepaiva.arway2.chat.ChatViewTypes.BOT_TEXT_BUTTONS;
+import static com.tribalscale.felipepaiva.arway2.chat.ChatViewTypes.BOT_TEXT_GALLERY;
+import static com.tribalscale.felipepaiva.arway2.chat.ChatViewTypes.BOT_TEXT_SIMPLE;
+import static com.tribalscale.felipepaiva.arway2.chat.ChatViewTypes.BOT_TEXT_WITH_IMAGE;
+import static com.tribalscale.felipepaiva.arway2.chat.ChatViewTypes.USER_MESSAGE_TEXT;
+
 public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     private List<ChatMessage> chatMessages;
     private View.OnClickListener clickListener;
@@ -25,7 +31,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
         this.clickListener = clickListener;
     }
 
-    public void addMessage(ChatMessage chatMessage) {
+    void addMessage(ChatMessage chatMessage) {
         chatMessages.add(chatMessage);
         notifyDataSetChanged();
     }
@@ -35,23 +41,37 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = null;
         switch (viewType){
-            case 0:
-                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_item_text, parent, false);
+            //BOT MESSAGE TYPES
+            //Simple Text
+            case BOT_TEXT_SIMPLE:
+                view = LayoutInflater.from(parent.getContext()).inflate(
+                        R.layout.chat_item_text, parent, false);
                 return new ViewHolderText(view);
-            case 1:
-                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_item_text_image, parent, false);
+            //Text with image
+            case BOT_TEXT_WITH_IMAGE:
+                view = LayoutInflater.from(parent.getContext()).inflate(
+                        R.layout.chat_item_text_image, parent, false);
                 return new ViewHolderTextImage(view);
-            case 2:
-                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_item_text_gallery, parent, false);
+            //Text Gallery
+            case BOT_TEXT_GALLERY:
+                view = LayoutInflater.from(parent.getContext()).inflate(
+                        R.layout.chat_item_text_gallery, parent, false);
                 return new ViewHolderTextGallery(view);
-            case 3:
-                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_item_user_text, parent, false);
-                return new ViewHolderUserText(view);
-            case 4:
-                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_item_text_buttons, parent, false);
+            //Text with buttons
+            case BOT_TEXT_BUTTONS:
+                view = LayoutInflater.from(parent.getContext()).inflate(
+                        R.layout.chat_item_text_buttons, parent, false);
                 return new ViewHolderTextWithButtons(view);
+            //User Message types
+            //Text
+            case USER_MESSAGE_TEXT:
+                view = LayoutInflater.from(parent.getContext()).inflate(
+                        R.layout.chat_item_user_text, parent, false);
+                return new ViewHolderUserText(view);
+            //Default simple text message
             default:
-                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_item_text, parent, false);
+                view = LayoutInflater.from(parent.getContext()).inflate(
+                        R.layout.chat_item_text, parent, false);
                 return new ViewHolderText(view);
         }
     }
@@ -60,20 +80,20 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         int viewType = chatMessages.get(position).getMessageType();
         switch (viewType){
-            case 0:
+            case BOT_TEXT_SIMPLE:
                 ((ViewHolderText) holder).bindData(chatMessages.get(position));
                 break;
-            case 1:
+            case BOT_TEXT_WITH_IMAGE:
                 ((ViewHolderTextImage) holder).bindData(chatMessages.get(position));
                 break;
-            case 2:
+            case BOT_TEXT_GALLERY:
                 ((ViewHolderTextGallery) holder).bindData(chatMessages.get(position));
                 break;
-            case 3:
-                ((ViewHolderUserText) holder).bindData(chatMessages.get(position));
-                break;
-            case 4:
+            case BOT_TEXT_BUTTONS:
                 ((ViewHolderTextWithButtons) holder).bindData(chatMessages.get(position), clickListener);
+                break;
+            case USER_MESSAGE_TEXT:
+                ((ViewHolderUserText) holder).bindData(chatMessages.get(position));
                 break;
             default:
                 ((ViewHolderText) holder).bindData(chatMessages.get(position));

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tribalscale.felipepaiva.arway2">
-
     <!-- Both "AR Optional" and "AR Required" apps require CAMERA permission. -->
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -11,9 +10,6 @@
          visible in the Google Play Store on devices that support ARCore.
          For "AR Optional" apps remove this line. -->
     <uses-feature android:name="android.hardware.camera.ar" />
-
-
-
     <application
         android:fullBackupContent="false"
         android:allowBackup="true"
@@ -32,19 +28,21 @@
         <activity
             android:name=".chat.ChatActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.Chat"/>
-
-        <activity
-            android:name=".arscene.MainActivity"
-            android:label="@string/app_name"
-            android:theme="@style/AppTheme.splash"
-            >
+            android:theme="@style/AppTheme.Chat">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".arscene.MainActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.splash"
+            >
+
         </activity>
 
         <!-- ARCore Required field -->
