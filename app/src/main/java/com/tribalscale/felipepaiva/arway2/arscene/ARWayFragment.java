@@ -2,19 +2,29 @@ package com.tribalscale.felipepaiva.arway2.arscene;
 
 import android.Manifest;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.ar.sceneform.rendering.ModelRenderable;
 import com.google.ar.sceneform.ux.ArFragment;
 import com.tribalscale.felipepaiva.arway2.utils.CameraPermissionHelper;
 
+import java.util.concurrent.CompletableFuture;
+
 import androidx.annotation.Nullable;
 
-public class ARWayFragment extends ArFragment {
-    public ARWayFragment() {
+public class ARWayFragment extends ArFragment implements ARWayFragmentContract.view{
 
-    }
+    private String TAG = ARWayFragment.class.getName();
+
+    private ARWayFragmentPresenter presenter;
+    public boolean hasFinishedLoading = false;
+    private ModelRenderable lineRenderable;
+    private CompletableFuture<Object> objectCompletableFuture;
+
+    public ARWayFragment() {}
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -29,6 +39,8 @@ public class ARWayFragment extends ArFragment {
         }
         super.onResume();
 
+        this.presenter = new ARWayFragmentPresenter(this.getContext(), this, this);
+        presenter.prepareModelRenderable();
     }
 
     //This method is required to be able to take a "print" of ar fragment.
@@ -42,5 +54,10 @@ public class ARWayFragment extends ArFragment {
             System.arraycopy(additionalPermissions, 0, permissions, 1, additionalPermissions.length);
         }
         return permissions;
+    }
+
+    @Override
+    public void render(ModelRenderable modelRenderable) {
+
     }
 }
