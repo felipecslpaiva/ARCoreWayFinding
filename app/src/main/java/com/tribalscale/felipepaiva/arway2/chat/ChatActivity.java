@@ -37,14 +37,13 @@ public class ChatActivity extends AppCompatActivity implements ChatContract.view
 
         fab.setEnabled(false);
         editText.addTextChangedListener(getTextWatcher());
-        fab.setOnClickListener(new View.OnClickListener() {
+        fab.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
                 sendMessage(editText.getText().toString());
             }
         });
-
-        chatPressenter.initDialogFlow();
+        chatPressenter.sendWelcomeMessage();
     }
 
     private void sendMessage(String text) {

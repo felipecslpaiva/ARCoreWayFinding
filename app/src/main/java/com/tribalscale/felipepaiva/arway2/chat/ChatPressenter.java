@@ -124,8 +124,25 @@ public class ChatPressenter implements ChatContract.presenter {
 
     public void updateConversationWithMessage(DetectIntentResponse response) {
         ChatMessage chatMessage = new ChatMessage();
-        chatMessage.buildUserMessageForText(response.getQueryResult().getFulfillmentText());
-        chatAdapter.addMessage(chatMessage);
+        if(response.getQueryResult().getFulfillmentText().contains("Facebook")){
+            chatMessage.buildBotMessageForText(response.getQueryResult().getFulfillmentText());
+            chatAdapter.addMessage(chatMessage);
+
+            ChatMessage chatMessageType2 = new ChatMessage();
+            chatMessageType2.setMessageType(1);
+            chatMessageType2.setMessageOrigin(0);
+            chatMessageType2.setImageurl("https://png.pngtree.com/element_pic/00/16/07/19578de0fdacc43.jpg");
+            chatAdapter.addMessage(chatMessageType2);
+
+            ChatMessage chatMessageType4 = new ChatMessage();
+            chatMessageType4.setMessage("Should i direct you for the store?");
+            chatMessageType4.setMessageType(4);
+            chatMessageType4.setMessageOrigin(0);
+            chatAdapter.addMessage(chatMessageType4);
+        }else{
+            chatMessage.buildBotMessageForText(response.getQueryResult().getFulfillmentText());
+            chatAdapter.addMessage(chatMessage);
+        }
         chatViewContract.clearEditText();
     }
 
@@ -147,5 +164,23 @@ public class ChatPressenter implements ChatContract.presenter {
         new RequestJavaV2Task(context,
                 getSession(),
                 getSessionClient(), queryInput, this).execute();
+    }
+
+    @Override
+    public void sendWelcomeMessage() {
+        ChatMessage chatMessageType1 = new ChatMessage();
+        chatMessageType1.setMessage("Welcome to the Dubai Mall, How can i help you today?");
+        chatMessageType1.setMessageType(0);
+        chatMessageType1.setMessageOrigin(0);
+
+        ArrayList<ChatMessage> chatMessages = new ArrayList<ChatMessage>();
+        chatMessages.add(chatMessageType1);
+        chatAdapter = new ChatAdapter(chatMessages, new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                chatViewContract.navigateToArScene();
+            }
+        });
+        chatViewContract.setAdapter(chatAdapter);
     }
 }

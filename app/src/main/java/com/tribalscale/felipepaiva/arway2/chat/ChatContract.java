@@ -16,7 +16,7 @@ public interface ChatContract {
         SessionName getSession();
         SessionsClient getSessionClient();
         void updateConversationWithMessage(DetectIntentResponse response);
-
         void sendMessage(String text);
+        void sendWelcomeMessage();
     }
 }
