@@ -1,22 +1,17 @@
 package com.tribalscale.felipepaiva.arway2.arscene;
 
-import android.app.Fragment;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.ImageView;
+import android.widget.Toast;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 import com.tribalscale.felipepaiva.arway2.R;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-
-import android.util.Log;
-import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.ImageView;
-import android.widget.Toast;
 
 public class ARSceneActivity extends AppCompatActivity {
 
@@ -39,7 +34,7 @@ public class ARSceneActivity extends AppCompatActivity {
                         fragmentViewContract.savePath();
                     }
                     Toast.makeText(
-                            ARSceneActivity.this, "Path saved", Toast.LENGTH_LONG)
+                            ARSceneActivity.this, "Feature under development", Toast.LENGTH_LONG)
                             .show();
                 });
     }
