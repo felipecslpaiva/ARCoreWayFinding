@@ -4,7 +4,6 @@ public interface ARWayFragmentContract {
     interface view {
         void savePath();
     }
-
     interface presenter {
         void savePath();
     }

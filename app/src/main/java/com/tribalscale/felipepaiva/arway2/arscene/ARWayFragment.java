@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 
 import com.google.ar.sceneform.rendering.ModelRenderable;
 import com.google.ar.sceneform.ux.ArFragment;
+import com.tribalscale.felipepaiva.arway2.data.ARSceneRepository;
 import com.tribalscale.felipepaiva.arway2.utils.CameraPermissionHelper;
 
 import java.util.concurrent.CompletableFuture;
@@ -34,7 +35,9 @@ public class ARWayFragment extends ArFragment implements ARWayFragmentContract.v
         }
         super.onResume();
 
-        this.presenter = new ARWayFragmentPresenter(this.getContext(), this, this);
+        this.presenter = new ARWayFragmentPresenter(this.getContext(),
+                this,
+                this, new ARSceneRepository());
         presenter.prepareModelRenderable();
     }
 

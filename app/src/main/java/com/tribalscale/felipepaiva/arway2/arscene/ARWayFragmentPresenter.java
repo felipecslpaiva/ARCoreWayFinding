@@ -21,29 +21,38 @@ import com.google.ar.sceneform.rendering.ModelRenderable;
 import com.google.ar.sceneform.rendering.ShapeFactory;
 import com.google.ar.sceneform.ux.TransformableNode;
 import com.tribalscale.felipepaiva.arway2.R;
+import com.tribalscale.felipepaiva.arway2.data.ARSceneRepository;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 class ARWayFragmentPresenter implements ARWayFragmentContract.presenter {
+    private String TAG = ARWayFragmentPresenter.class.getSimpleName();
     private static final String GLTF_ASSET =
             "https://github.com/KhronosGroup/glTF-Sample-Models/raw/master/2.0/Duck/glTF/Duck.gltf";
 
     private Context context;
-    private ARWayFragmentContract.view viewContract;
     private ARWayFragment arWayFragment;
+    private ARSceneRepository arSceneRepository;
+    private ARWayFragmentContract.view viewContract;
     private List<ModelRenderable> modelRenderableList = new ArrayList<ModelRenderable>();
-    private List<AnchorNode> anchorNodeList = new ArrayList<AnchorNode>();
-    private boolean finishLoading = false;
+    private List<DBAnchorNode> anchorMarkNodeList = new ArrayList<DBAnchorNode>();
+    private List<DBAnchorNode> anchorLineNodeList = new ArrayList<DBAnchorNode>();
     private ModelRenderable cube;
-    private String TAG = ARWayFragmentPresenter.class.getSimpleName();
     private AnchorNode lastAnchorNode;
+    private boolean finishLoading = false;
+    private int renderableNodeCounter = 1;
+    private int lineNodeCounter = 1;
 
-    ARWayFragmentPresenter(Context context, ARWayFragmentContract.view viewContract, ARWayFragment arWayFragment) {
+    ARWayFragmentPresenter(Context context, ARWayFragmentContract.view viewContract, ARWayFragment arWayFragment, ARSceneRepository arSceneRepository) {
         this.context = context;
         this.viewContract =  viewContract;
         this.arWayFragment = arWayFragment;
+        this.arSceneRepository = arSceneRepository;
+        lineNodeCounter = 0;
+        renderableNodeCounter = 0;
+        arWayFragment.setOnTapArPlaneListener(this::tapListener);
     }
 
     void prepareModelRenderable(){
@@ -53,7 +62,7 @@ class ARWayFragmentPresenter implements ARWayFragmentContract.presenter {
                                 context,
                                 Uri.parse(GLTF_ASSET),
                                 RenderableSource.SourceType.GLTF2)
-                                .setScale(0.2f)  // Scale the original model to 50%.
+                                .setScale(0.1f)  // Scale the original model to 50%.
                                 .setRecenterMode(RenderableSource.RecenterMode.ROOT)
                                 .build())
                 .setRegistryId(GLTF_ASSET)
@@ -73,7 +82,6 @@ class ARWayFragmentPresenter implements ARWayFragmentContract.presenter {
     private void completableHandler(ModelRenderable modelRenderable) {
         modelRenderableList.add(modelRenderable);
         finishLoading = true;
-        arWayFragment.setOnTapArPlaneListener(this::tapListener);
     }
 
     //This getter is for local resources will keep it here as reference
@@ -99,15 +107,17 @@ class ARWayFragmentPresenter implements ARWayFragmentContract.presenter {
 
         //Create the anchors need for the node based on our
         Anchor anchor = hitResult.createAnchor();
-        AnchorNode anchorNode = new AnchorNode(anchor);
+        DBAnchorNode anchorNode = new DBAnchorNode(anchor);
+        anchorNode.setName("RenderableNode" + renderableNodeCounter);
+        renderableNodeCounter = renderableNodeCounter ++;
 
         //if it's the first element to be render the parent is the root element if not we should
         //get the last one from the list
-        if(anchorNodeList.size() < 1){
+        if(anchorMarkNodeList.size() < 1){
             anchorNode.setParent(arWayFragment.getArSceneView().getScene());
         }else{
             try {
-                anchorNode.setParent(anchorNodeList.get(anchorNodeList.size()));
+                anchorNode.setParent(anchorMarkNodeList.get(anchorMarkNodeList.size()));
             }catch (IndexOutOfBoundsException ex){
                 ex.printStackTrace();
                 anchorNode.setParent(arWayFragment.getArSceneView().getScene());
@@ -120,7 +130,7 @@ class ARWayFragmentPresenter implements ARWayFragmentContract.presenter {
         transformableNode.select();
 
         //After add to the scene keep a referrence of it for further use.
-        anchorNodeList.add(anchorNode);
+        anchorMarkNodeList.add(anchorNode);
 
         if(lastAnchorNode  == null){
             lastAnchorNode = anchorNode;
@@ -151,7 +161,9 @@ class ARWayFragmentPresenter implements ARWayFragmentContract.presenter {
 
     private void addLineBetweenHits(HitResult hitResult, Plane plane, MotionEvent motionEvent) {
         Anchor anchor = hitResult.createAnchor();
-        AnchorNode anchorNode = new AnchorNode(anchor);
+        DBAnchorNode anchorNode = new DBAnchorNode(anchor);
+        anchorNode.setName("LineNode"+lineNodeCounter);
+        lineNodeCounter = lineNodeCounter++;
 
         if (lastAnchorNode != null) {
             anchorNode.setParent(arWayFragment.getArSceneView().getScene());
@@ -185,11 +197,13 @@ class ARWayFragmentPresenter implements ARWayFragmentContract.presenter {
                             }
                     );
             lastAnchorNode = anchorNode;
+            anchorLineNodeList.add(anchorNode);
         }
     }
 
     @Override
     public void savePath() {
-        
+        arSceneRepository.saveMarkers(anchorMarkNodeList);
+        arSceneRepository.savePath(anchorLineNodeList);
     }
 }
