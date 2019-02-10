@@ -2,13 +2,13 @@ package com.tribalscale.felipepaiva.arway2.arscene;
 
 import android.Manifest;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.ar.sceneform.rendering.ModelRenderable;
 import com.google.ar.sceneform.ux.ArFragment;
+import com.tribalscale.felipepaiva.arway2.data.ARSceneRepository;
 import com.tribalscale.felipepaiva.arway2.utils.CameraPermissionHelper;
 
 import java.util.concurrent.CompletableFuture;
@@ -18,11 +18,7 @@ import androidx.annotation.Nullable;
 public class ARWayFragment extends ArFragment implements ARWayFragmentContract.view{
 
     private String TAG = ARWayFragment.class.getName();
-
     private ARWayFragmentPresenter presenter;
-    public boolean hasFinishedLoading = false;
-    private ModelRenderable lineRenderable;
-    private CompletableFuture<Object> objectCompletableFuture;
 
     public ARWayFragment() {}
 
@@ -39,7 +35,9 @@ public class ARWayFragment extends ArFragment implements ARWayFragmentContract.v
         }
         super.onResume();
 
-        this.presenter = new ARWayFragmentPresenter(this.getContext(), this, this);
+        this.presenter = new ARWayFragmentPresenter(this.getContext(),
+                this,
+                this, new ARSceneRepository());
         presenter.prepareModelRenderable();
     }
 
@@ -57,7 +55,7 @@ public class ARWayFragment extends ArFragment implements ARWayFragmentContract.v
     }
 
     @Override
-    public void render(ModelRenderable modelRenderable) {
-
+    public void savePath() {
+        presenter.savePath();
     }
 }
