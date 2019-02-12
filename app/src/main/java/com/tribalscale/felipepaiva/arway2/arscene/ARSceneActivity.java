@@ -1,5 +1,6 @@
 package com.tribalscale.felipepaiva.arway2.arscene;
 
+import android.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -7,6 +8,7 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.ar.core.Config;
 import com.tribalscale.felipepaiva.arway2.R;
 
 import androidx.annotation.NonNull;
@@ -26,7 +28,6 @@ public class ARSceneActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
         imageViewStore = findViewById(R.id.activity_main_content_image);
         imageViewStore.setOnClickListener(
                 v -> {
@@ -43,7 +44,7 @@ public class ARSceneActivity extends AppCompatActivity {
     public void onAttachFragment(@NonNull androidx.fragment.app.Fragment fragment) {
         super.onAttachFragment(fragment);
         if(fragment instanceof ARWayFragment){
-            fragmentViewContract = arWayFragment;
+            fragmentViewContract = (ARWayFragmentContract.view) fragment;
             Log.d(TAG, fragment.getClass().getSimpleName());
         }
     }

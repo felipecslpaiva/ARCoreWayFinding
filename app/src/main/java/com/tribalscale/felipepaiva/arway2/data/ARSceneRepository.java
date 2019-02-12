@@ -1,16 +1,27 @@
 package com.tribalscale.felipepaiva.arway2.data;
 
-import com.tribalscale.felipepaiva.arway2.arscene.DBAnchorNode;
+import android.app.Application;
 
+import com.google.ar.core.HitResult;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class ARSceneRepository {
 
-    public void saveMarkers(List<DBAnchorNode> anchorMarkNodeList) {
+    private static String TAG = ARSceneRepository.class.getSimpleName();
+    private Application application;
 
+    public ARSceneRepository(Application application) {
+        this.application = application;
     }
 
-    public void savePath(List<DBAnchorNode> anchorLineNodeList) {
+    public String saveMarkers(List<HitResult> hitResultList) {
+        List<HitResult> markers = getMarkers();
+        return "";
+    }
 
+    public List<HitResult> getMarkers() {
+        return new ArrayList<HitResult>();
     }
 }

@@ -2,14 +2,17 @@ package com.tribalscale.felipepaiva.arway2.arscene;
 
 import android.content.Context;
 import android.net.Uri;
+import android.opengl.GLSurfaceView;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.widget.Toast;
 
 import com.google.ar.core.Anchor;
+import com.google.ar.core.Config;
 import com.google.ar.core.HitResult;
 import com.google.ar.core.Plane;
+import com.google.ar.core.Session;
 import com.google.ar.sceneform.AnchorNode;
 import com.google.ar.sceneform.Node;
 import com.google.ar.sceneform.assets.RenderableSource;
@@ -27,7 +30,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-class ARWayFragmentPresenter implements ARWayFragmentContract.presenter {
+import javax.microedition.khronos.egl.EGLConfig;
+import javax.microedition.khronos.opengles.GL10;
+
+import androidx.annotation.GuardedBy;
+
+class ARWayFragmentPresenter implements ARWayFragmentContract.presenter, GLSurfaceView.Renderer {
+    private final Session session;
     private String TAG = ARWayFragmentPresenter.class.getSimpleName();
     private static final String GLTF_ASSET =
             "https://github.com/KhronosGroup/glTF-Sample-Models/raw/master/2.0/Duck/glTF/Duck.gltf";
@@ -44,6 +53,10 @@ class ARWayFragmentPresenter implements ARWayFragmentContract.presenter {
     private boolean finishLoading = false;
     private int renderableNodeCounter = 1;
     private int lineNodeCounter = 1;
+    private List<HitResult> hitResultList = new ArrayList<HitResult>();
+
+    @GuardedBy("singleTapAnchorLock")
+    private AppAnchorState appAnchorState = AppAnchorState.NONE;
 
     ARWayFragmentPresenter(Context context, ARWayFragmentContract.view viewContract, ARWayFragment arWayFragment, ARSceneRepository arSceneRepository) {
         this.context = context;
@@ -53,6 +66,7 @@ class ARWayFragmentPresenter implements ARWayFragmentContract.presenter {
         lineNodeCounter = 0;
         renderableNodeCounter = 0;
         arWayFragment.setOnTapArPlaneListener(this::tapListener);
+        session = arWayFragment.getArSceneView().getSession();
     }
 
     void prepareModelRenderable(){
@@ -97,19 +111,30 @@ class ARWayFragmentPresenter implements ARWayFragmentContract.presenter {
     }
 
     private void tapListener(HitResult hitResult, Plane plane, MotionEvent motionEvent) {
-        if (this.modelRenderableList.get(0) == null){
+        try {
+            if (this.modelRenderableList.get(0) == null){
+                return;
+            }
+        }catch (Exception ex){
+            ex.printStackTrace();
             return;
         }
+
+        Config config = new Config(arWayFragment.getArSceneView().getSession());
+        config.setUpdateMode(Config.UpdateMode.LATEST_CAMERA_IMAGE);
+        config.setPlaneFindingMode(Config.PlaneFindingMode.HORIZONTAL_AND_VERTICAL);
+        config.setCloudAnchorMode(Config.CloudAnchorMode.ENABLED); // Add this line.
+        arWayFragment.getArSceneView().getSession().configure(config);
 
         //pick one renderable from the list
         //Fixed by now because whe only have one renderable
         ModelRenderable tempModel = modelRenderableList.get(0);
 
         //Create the anchors need for the node based on our
-        Anchor anchor = hitResult.createAnchor();
+        Anchor anchor = session.hostCloudAnchor(hitResult.createAnchor());
         DBAnchorNode anchorNode = new DBAnchorNode(anchor);
         anchorNode.setName("RenderableNode" + renderableNodeCounter);
-        renderableNodeCounter = renderableNodeCounter ++;
+        renderableNodeCounter = renderableNodeCounter + 1;
 
         //if it's the first element to be render the parent is the root element if not we should
         //get the last one from the list
@@ -160,10 +185,10 @@ class ARWayFragmentPresenter implements ARWayFragmentContract.presenter {
     }
 
     private void addLineBetweenHits(HitResult hitResult, Plane plane, MotionEvent motionEvent) {
-        Anchor anchor = hitResult.createAnchor();
+        Anchor anchor = session.hostCloudAnchor(hitResult.createAnchor());
         DBAnchorNode anchorNode = new DBAnchorNode(anchor);
         anchorNode.setName("LineNode"+lineNodeCounter);
-        lineNodeCounter = lineNodeCounter++;
+        lineNodeCounter = lineNodeCounter + 1;
 
         if (lastAnchorNode != null) {
             anchorNode.setParent(arWayFragment.getArSceneView().getScene());
@@ -201,9 +226,31 @@ class ARWayFragmentPresenter implements ARWayFragmentContract.presenter {
         }
     }
 
+    private void checkUpdatedAnchor() {
+        // We'll fill this in later...
+    }
+
     @Override
     public void savePath() {
-        arSceneRepository.saveMarkers(anchorMarkNodeList);
-        arSceneRepository.savePath(anchorLineNodeList);
+        arSceneRepository.saveMarkers(hitResultList);
+    }
+
+    public List<HitResult> getHitResultList(){
+        return arSceneRepository.getMarkers();
+    }
+
+    @Override
+    public void onSurfaceCreated(GL10 gl, EGLConfig config) {
+
+    }
+
+    @Override
+    public void onSurfaceChanged(GL10 gl, int width, int height) {
+
+    }
+
+    @Override
+    public void onDrawFrame(GL10 gl) {
+
     }
 }
