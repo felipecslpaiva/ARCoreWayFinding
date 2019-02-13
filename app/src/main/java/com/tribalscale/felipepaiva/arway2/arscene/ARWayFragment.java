@@ -42,9 +42,10 @@ public class ARWayFragment extends ArFragment implements ARWayFragmentContract.v
         }
         super.onResume();
 
+        ARSceneRepository arSceneRepository = new ARSceneRepository(getActivity().getApplication());
         this.presenter = new ARWayFragmentPresenter(this.getContext(),
                 this,
-                this, new ARSceneRepository(getActivity().getApplication()));
+                this, arSceneRepository);
         presenter.prepareModelRenderable();
     }
 
@@ -69,5 +70,10 @@ public class ARWayFragment extends ArFragment implements ARWayFragmentContract.v
     @Override
     public void savePath() {
         presenter.savePath();
+    }
+
+    @Override
+    public void changeRenderableSource() {
+        presenter.changeRenderebleSouce();
     }
 }

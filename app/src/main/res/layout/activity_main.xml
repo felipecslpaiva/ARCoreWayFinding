@@ -110,6 +110,19 @@
         </LinearLayout>
 
         <ImageView
+            android:id="@+id/activity_main_content_image2"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="5dp"
+            android:contentDescription="@string/content_description_store_logo"
+            android:maxWidth="180dp"
+            android:maxHeight="90dp"
+            android:src="@android:color/transparent"
+            app:layout_constraintBottom_toTopOf="@+id/activity_main_content_image"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <ImageView
             android:id="@+id/activity_main_content_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

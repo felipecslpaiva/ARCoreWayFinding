@@ -16,6 +16,8 @@ import com.google.ar.core.Session;
 import com.google.ar.sceneform.AnchorNode;
 import com.google.ar.sceneform.Node;
 import com.google.ar.sceneform.assets.RenderableSource;
+import com.google.ar.sceneform.common.TransformProvider;
+import com.google.ar.sceneform.math.Matrix;
 import com.google.ar.sceneform.math.Quaternion;
 import com.google.ar.sceneform.math.Vector3;
 import com.google.ar.sceneform.rendering.Color;
@@ -38,8 +40,14 @@ import androidx.annotation.GuardedBy;
 class ARWayFragmentPresenter implements ARWayFragmentContract.presenter, GLSurfaceView.Renderer {
     private final Session session;
     private String TAG = ARWayFragmentPresenter.class.getSimpleName();
-    private static final String GLTF_ASSET =
+    private static final String DUCK_GLTF_ASSET =
             "https://github.com/KhronosGroup/glTF-Sample-Models/raw/master/2.0/Duck/glTF/Duck.gltf";
+
+    private static final String BOX_GLTF_ASSET =
+            "https://github.com/KhronosGroup/glTF-Sample-Models/raw/master/2.0/BoxAnimated/glTF/BoxAnimated.gltf";
+
+    private static final String PIN_GLTF_ASSET =
+            "https://github.com/KhronosGroup/glTF-Sample-Models/raw/master/2.0/BoxAnimated/glTF/BoxAnimated.gltf";
 
     private Context context;
     private ARWayFragment arWayFragment;
@@ -54,9 +62,11 @@ class ARWayFragmentPresenter implements ARWayFragmentContract.presenter, GLSurfa
     private int renderableNodeCounter = 1;
     private int lineNodeCounter = 1;
     private List<HitResult> hitResultList = new ArrayList<HitResult>();
+    private int currentRenderable = 0;
 
     @GuardedBy("singleTapAnchorLock")
     private AppAnchorState appAnchorState = AppAnchorState.NONE;
+    private ArrayList<String> glfRemoteAssets;
 
     ARWayFragmentPresenter(Context context, ARWayFragmentContract.view viewContract, ARWayFragment arWayFragment, ARSceneRepository arSceneRepository) {
         this.context = context;
@@ -67,30 +77,42 @@ class ARWayFragmentPresenter implements ARWayFragmentContract.presenter, GLSurfa
         renderableNodeCounter = 0;
         arWayFragment.setOnTapArPlaneListener(this::tapListener);
         session = arWayFragment.getArSceneView().getSession();
+        this.glfRemoteAssets = new ArrayList<>();
+
+        glfRemoteAssets.add(DUCK_GLTF_ASSET);
+        glfRemoteAssets.add(PIN_GLTF_ASSET);
     }
 
+    //Iterate over the list who can be provided by the back end (remote asset list)
     void prepareModelRenderable(){
-        ModelRenderable.builder()
-                .setSource(context,
-                        RenderableSource.builder().setSource(
-                                context,
-                                Uri.parse(GLTF_ASSET),
-                                RenderableSource.SourceType.GLTF2)
-                                .setScale(0.1f)  // Scale the original model to 50%.
-                                .setRecenterMode(RenderableSource.RecenterMode.ROOT)
-                                .build())
-                .setRegistryId(GLTF_ASSET)
-                .build()
-                .thenAccept(this::completableHandler)
-                .exceptionally(
-                        throwable -> {
-                            Toast toast =
-                                    Toast.makeText(context, "Unable to load renderable " +
-                                            GLTF_ASSET, Toast.LENGTH_LONG);
-                            toast.setGravity(Gravity.CENTER, 0, 0);
-                            toast.show();
-                            return null;
-                        });
+        for (int i = 0; i < glfRemoteAssets.size(); i++) {
+            String assetPath = glfRemoteAssets.get(i);
+            ModelRenderable.builder()
+                    .setSource(context,
+                            getRenderableforAsset(assetPath))
+                    .setRegistryId(assetPath)
+                    .build()
+                    .thenAccept(this::completableHandler)
+                    .exceptionally(
+                            throwable -> {
+                                Toast toast =
+                                        Toast.makeText(context, "Unable to load renderable " +
+                                                assetPath, Toast.LENGTH_LONG);
+                                toast.setGravity(Gravity.CENTER, 0, 0);
+                                toast.show();
+                                return null;
+                            });
+        }
+    }
+
+    private RenderableSource getRenderableforAsset(String assetPath) {
+        return RenderableSource.builder().setSource(
+                context,
+                Uri.parse(assetPath),
+                RenderableSource.SourceType.GLTF2)
+                .setScale(0.1f)  // Scale the original model to 50%.
+                .setRecenterMode(RenderableSource.RecenterMode.ROOT)
+                .build();
     }
 
     private void completableHandler(ModelRenderable modelRenderable) {
@@ -100,14 +122,14 @@ class ARWayFragmentPresenter implements ARWayFragmentContract.presenter, GLSurfa
 
     //This getter is for local resources will keep it here as reference
     CompletableFuture<ModelRenderable> get3DModel() {
-        RenderableSource.Builder builder = RenderableSource.builder().setSource(
+        RenderableSource.Builder renderableSourceBuilder = RenderableSource.builder().setSource(
                 context,
-                Uri.parse(GLTF_ASSET),
+                Uri.parse(DUCK_GLTF_ASSET),
                 RenderableSource.SourceType.GLTF2)
                 .setScale(0.5f)  // Scale the original model to 50%.
                 .setRecenterMode(RenderableSource.RecenterMode.ROOT);
         return ModelRenderable.builder()
-                .setSource(context, builder.build()).build();
+                .setSource(context, renderableSourceBuilder.build()).build();
     }
 
     private void tapListener(HitResult hitResult, Plane plane, MotionEvent motionEvent) {
@@ -128,7 +150,7 @@ class ARWayFragmentPresenter implements ARWayFragmentContract.presenter, GLSurfa
 
         //pick one renderable from the list
         //Fixed by now because whe only have one renderable
-        ModelRenderable tempModel = modelRenderableList.get(0);
+        ModelRenderable tempModel = modelRenderableList.get(currentRenderable);
 
         //Create the anchors need for the node based on our
         Anchor anchor = session.hostCloudAnchor(hitResult.createAnchor());
@@ -232,11 +254,17 @@ class ARWayFragmentPresenter implements ARWayFragmentContract.presenter, GLSurfa
 
     @Override
     public void savePath() {
-        arSceneRepository.saveMarkers(hitResultList);
+        arSceneRepository.saveMarkers(anchorLineNodeList);
+        arSceneRepository.saveMarkers(anchorMarkNodeList);
     }
 
-    public List<HitResult> getHitResultList(){
-        return arSceneRepository.getMarkers();
+    @Override
+    public void changeRenderebleSouce() {
+        if(currentRenderable == 0){
+            currentRenderable = 1;
+        }else{
+            currentRenderable = 0;
+        }
     }
 
     @Override
