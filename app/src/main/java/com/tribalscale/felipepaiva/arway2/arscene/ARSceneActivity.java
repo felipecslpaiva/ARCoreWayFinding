@@ -1,12 +1,15 @@
 package com.tribalscale.felipepaiva.arway2.arscene;
 
+import android.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.ar.core.Config;
 import com.tribalscale.felipepaiva.arway2.R;
 
 import androidx.annotation.NonNull;
@@ -16,6 +19,7 @@ import androidx.appcompat.widget.Toolbar;
 public class ARSceneActivity extends AppCompatActivity {
 
     private ImageView imageViewStore;
+    private ImageView imageViewStore2;
     private ARWayFragment arWayFragment;
     private String TAG = ARSceneActivity.class.getSimpleName();
     private ARWayFragmentContract.view fragmentViewContract;
@@ -26,7 +30,6 @@ public class ARSceneActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
         imageViewStore = findViewById(R.id.activity_main_content_image);
         imageViewStore.setOnClickListener(
                 v -> {
@@ -37,13 +40,21 @@ public class ARSceneActivity extends AppCompatActivity {
                             ARSceneActivity.this, "Feature under development", Toast.LENGTH_LONG)
                             .show();
                 });
+
+        imageViewStore2 = findViewById(R.id.activity_main_content_image2);
+        imageViewStore2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fragmentViewContract.changeRenderableSource();
+            }
+        });
     }
 
     @Override
     public void onAttachFragment(@NonNull androidx.fragment.app.Fragment fragment) {
         super.onAttachFragment(fragment);
         if(fragment instanceof ARWayFragment){
-            fragmentViewContract = arWayFragment;
+            fragmentViewContract = (ARWayFragmentContract.view) fragment;
             Log.d(TAG, fragment.getClass().getSimpleName());
         }
     }

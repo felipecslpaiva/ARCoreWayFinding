@@ -1,11 +1,14 @@
 package com.tribalscale.felipepaiva.arway2.arscene;
 
 import android.Manifest;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.ar.core.Config;
+import com.google.ar.core.TrackingState;
 import com.google.ar.sceneform.rendering.ModelRenderable;
 import com.google.ar.sceneform.ux.ArFragment;
 import com.tribalscale.felipepaiva.arway2.data.ARSceneRepository;
@@ -13,6 +16,10 @@ import com.tribalscale.felipepaiva.arway2.utils.CameraPermissionHelper;
 
 import java.util.concurrent.CompletableFuture;
 
+import javax.microedition.khronos.opengles.GL10;
+
+import androidx.annotation.GuardedBy;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 public class ARWayFragment extends ArFragment implements ARWayFragmentContract.view{
@@ -35,10 +42,16 @@ public class ARWayFragment extends ArFragment implements ARWayFragmentContract.v
         }
         super.onResume();
 
+        ARSceneRepository arSceneRepository = new ARSceneRepository(getActivity().getApplication());
         this.presenter = new ARWayFragmentPresenter(this.getContext(),
                 this,
-                this, new ARSceneRepository());
+                this, arSceneRepository);
         presenter.prepareModelRenderable();
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
     }
 
     //This method is required to be able to take a "print" of ar fragment.
@@ -57,5 +70,10 @@ public class ARWayFragment extends ArFragment implements ARWayFragmentContract.v
     @Override
     public void savePath() {
         presenter.savePath();
+    }
+
+    @Override
+    public void changeRenderableSource() {
+        presenter.changeRenderebleSouce();
     }
 }

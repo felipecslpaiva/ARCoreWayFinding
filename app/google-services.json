@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "1079623225961",
+    "firebase_url": "https://moe-kmabad.firebaseio.com",
+    "project_id": "moe-kmabad",
+    "storage_bucket": "moe-kmabad.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1079623225961:android:bf3d2418e4a71d8a",
+        "android_client_info": {
+          "package_name": "com.tribalscale.felipepaiva.arway2"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1079623225961-0b6rgvtunc990fqkn1iqoktnq9j4vgmf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tribalscale.felipepaiva.arway2",
+            "certificate_hash": "fe6a504eaacdfbcc5785ea4efa3653f366ac58cf"
+          }
+        },
+        {
+          "client_id": "1079623225961-755lri8fkg58nbnnippfrh2ujj95snm6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAitZZVi91DqYR2aiM7HhizmwEWxXHBDoo"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1079623225961-755lri8fkg58nbnnippfrh2ujj95snm6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

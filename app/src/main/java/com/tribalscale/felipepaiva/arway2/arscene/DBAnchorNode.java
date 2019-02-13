@@ -14,12 +14,17 @@ import com.google.ar.sceneform.math.Vector3;
 import com.google.ar.sceneform.rendering.Light;
 import com.google.ar.sceneform.rendering.Renderable;
 
+import java.io.Serializable;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+public class DBAnchorNode extends AnchorNode implements Serializable {
 
-public class DBAnchorNode extends AnchorNode {
+    @NonNull
+    private String title = getName();
+
     public DBAnchorNode() {
         super();
     }
@@ -216,5 +221,14 @@ public class DBAnchorNode extends AnchorNode {
     @Override
     protected void finalize() throws Throwable {
         super.finalize();
+    }
+
+    public void setTitle(String title){
+        setName(title);
+    }
+
+    @NonNull
+    public String getTitle() {
+        return title = getName();
     }
 }
